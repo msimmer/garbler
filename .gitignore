@@ -1,0 +1,7 @@
+.DS_Store
+*.js
+*.coffee
+node_modules
+/test/lib
+*.log
+/hypher
