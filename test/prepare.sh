@@ -12,43 +12,55 @@ JQUERY_DEST="$PWD/test/lib/jquery.min.js"
 GARBLER_MODULE_SRC="$PWD/index.js"
 GARBLER_MODULE_DEST="$PWD/test/lib/garbler-es5.js"
 
-CMD_TRANSPILE="$PWD/node_modules/.bin/babel --module-root Garbler $GARBLER_MODULE_SRC"
+CMD_TRANSPILE="$PWD/node_modules/.bin/babel --presets=es2015 $GARBLER_MODULE_SRC"
 
-# node_modules/.bin/babel index.js --out-file test/lib/garbler-es5.js
+POLYFILL_SRC="$PWD/node_modules/babel-polyfill/dist/polyfill.js"
+POLYFILL_DEST="$PWD/test/lib/babel-polyfill.js"
 
 declare -a FILES=($LANG_MODULE_SRC $JQUERY_SRC $GARBLER_MODULE_SRC)
 
 for f in "${FILES[@]}"; do
-  if [[ ! -f $f ]]; then
-    printf '%s does not exist, exiting.\n' "$f"
-    exit 1
-  fi
+    if [[ ! -f $f ]]; then
+        printf '%s does not exist, exiting.\n' "$f"
+        exit 1
+    fi
 done
 
-module_head() { # module
-  while [[ $# -gt 0 ]]; do local "$1"; shift; done
-  echo "(function (root, factory) {if (typeof define === 'function' && define.amd) {define([], factory);} else if (typeof module === 'object' && module.exports) {module.exports = factory();} else {root.$module = factory();}}(this, function () {"
+module_head() { # module, deps
+    while [[ $# -gt 0 ]]; do local "$1"; shift; done
+    dep_lc="$(tr [A-Z] [a-z] <<< "$deps")"
+    echo "(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['$dep_lc'], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('$dep_lc'));
+    } else {
+        root.$name = factory(root.$deps);
+    }
+}(this, function ($deps) {"
 }
 
 module_foot() { # module
-  while [[ $# -gt 0 ]]; do local "$1"; shift; done
-  echo "return $module}));"
+    while [[ $# -gt 0 ]]; do local "$1"; shift; done
+    echo "return $module}));"
 }
 
-module_write() { # name, src, dest
-  while [[ $# -gt 0 ]]; do local "$1"; shift; done
-  printf '%s\n' "$(module_head module=$name)" > "$dest"
-  printf '%s\n' "$src" >> "$dest"
-  printf '%s\n' "$(module_foot module=$name)" >> "$dest"
-  printf 'Wrote file: %s\n' "$dest"
+module_write() { # name, src, dest, deps
+    while [[ $# -gt 0 ]]; do local "$1"; shift; done
+    printf '%s\n' "$(module_head module=$name deps=$deps)" > "$dest"
+    printf '%s\n' "$src" >> "$dest"
+    printf '%s\n' "$(module_foot module=$name)" >> "$dest"
+    printf 'Wrote file: %s\n' "$dest"
 }
 
 module_copy() { # src, dest
-  while [[ $# -gt 0 ]]; do local "$1"; shift; done
-  printf '%s\n' "$src" > "$dest"
-  printf 'Wrote file: %s\n' "$dest"
+    while [[ $# -gt 0 ]]; do local "$1"; shift; done
+    printf '%s\n' "$src" > "$dest"
+    printf 'Wrote file: %s\n' "$dest"
 }
 
 module_copy src="$(cat "$HYPHER_MODULE_SRC")" dest="$HYPHER_MODULE_DEST"
 module_copy src="$(cat "$JQUERY_SRC")" dest="$JQUERY_DEST"
-module_write name=Garbler src="$(eval "$CMD_TRANSPILE")" dest="$GARBLER_MODULE_DEST"
+module_copy src="$(cat "$POLYFILL_SRC")" dest="$POLYFILL_DEST"
+module_copy src="$(eval "$CMD_TRANSPILE")" dest="$GARBLER_MODULE_DEST"
+module_write name=Garbler src="$(eval "$CMD_TRANSPILE")" dest="$GARBLER_MODULE_DEST" deps="U"

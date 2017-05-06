@@ -3,44 +3,24 @@
 <head>
     <title>Garbler</title>
     <style type="text/css">
-        .container {
-            width: 600px;
-            margin: 0 auto;
-        }
+        body { background: #222; color: white; }
+        .container { width: 600px; margin: 0 auto; }
     </style>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/hypher.js"></script>
-    <script>
-        var Hyphenator={languages:{}}
-    </script>
+
+    <script src="lib/babel-polyfill.js"></script>
+    <script src="lib/u/u.build.js"></script>
     <script src="lib/en-us.js"></script>
+    <script src="lib/hypher.js"></script>
+    <script src="lib/adapter.js"></script>
     <script src="lib/garbler-es5.js"></script>
+
+    <script src="lib/jquery.min.js"></script>
+
     <script>
-        console.log(window.Hyphenator)
-        console.log(Hypher)
-
-
-        // $(function() {
-
-            /*
-            var h = new window['Hypher'](module.exports);
-
-            if (typeof module.exports.id === 'string') {
-                module.exports.id = [module.exports.id];
-            }
-
-            for (var i = 0; i < module.exports.id.length; i += 1) {
-              window['Hypher']['languages'][module.exports.id[i]] = h;
-            }
-             */
-
-            // var language = 'en'
-            // var hypher = window['Hypher']['languages'][language]
-            // console.log(window.Garbler)
-            // var garbler = new Garbler({ hypher: hypher })
-            // console.log(garbler)
-            // garbler.pdfify()
-        // })
+        $(function() {
+            var garbler = new Garbler()
+            garbler.pdfify()
+        })
     </script>
 </head>
 <body>
