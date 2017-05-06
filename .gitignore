@@ -1,7 +1,7 @@
 .DS_Store
-*.js
-*.coffee
+index.js
 node_modules
-/test/lib
 *.log
-/hypher
+/lib/vendor/hypher/
+/lib/vendor/lodash.custom/index.js
+/dist

@@ -1,32 +1,37 @@
 {
-  "name": "garbler",
-  "version": "0.1.0",
-  "description": "It garbles text",
-  "main": "index.js",
-  "scripts": {
-    "bump": "npm version prerelease -m 'Version bump %s'",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha -R spec ./test/index.js",
-    "test.prepare": "./test/prepare.sh",
-    "watch": "./node_modules/.bin/babel -w --presets=es2015 index.js --out-file ./test/lib/garbler-es5.js"
-  },
-  "author": "Maxwell Simmer <maxwell.simmer@gmail.com> (http://maxwellsimmer.com)",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "chai": "^3.5.0",
-    "mocha": "^3.3.0",
-    "regenerator": "^0.9.7"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "hyphenation.en-us": "^0.2.1",
-    "hypher": "file:./hypher",
-    "jquery": "^3.2.1",
-    "u": "file:test/lib/u"
-  }
+    "name": "garbler",
+    "version": "0.1.0",
+    "description": "For garbling",
+    "main": "index.js",
+    "scripts": {
+        "lodash": "lodash include=$(cat ./lib/vendor/lodash.custom/.includes | tr -d \"\\n\\r\") -o ./lib/vendor/lodash.custom/index.js -d",
+        "bump": "npm version prerelease -m 'Version bump %s'",
+        "test": "./node_modules/.bin/mocha --compilers js:babel-core/register ./__tests__",
+        "start": "./node_modules/.bin/webpack",
+        "build": "./node_modules/.bin/webpack -p --progress --profile",
+        "watch": "./node_modules/.bin/webpack -wd",
+        "postinstall": "npm run lodash"
+    },
+    "author": "Maxwell Simmer <maxwell.simmer@gmail.com> (http://maxwellsimmer.com)",
+    "license": "ISC",
+    "devDependencies": {
+        "babel-core": "^6.24.1",
+        "babel-loader": "^7.0.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-polyfill": "^6.23.0",
+        "babel-preset-env": "^1.4.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "chai": "^3.5.0",
+        "mocha": "^3.3.0",
+        "webpack": "^2.5.1"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "dependencies": {
+        "hyphenation.en-us": "^0.2.1",
+        "hypher": "file:./lib/vendor/hypher",
+        "jquery": "^3.2.1"
+    }
 }
