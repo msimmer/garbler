@@ -1,25 +1,35 @@
+/* eslint-disable array-bracket-spacing, no-unused-expressions */
+
 import 'babel-polyfill'
 import chai from 'chai'
-const should = chai.should()
+import {
+    deepExtend,
+    entries,
+    randRange,
+    isElement,
+    isText,
+    stringSplice,
+    passThrough } from '../lib/utils'
 
-import { deepExtend, entries, randRange, isElement, isText } from '../lib/utils'
+chai.should()
+
 
 describe('Utils', () => {
     describe('#deepExtend', () => {
         it('Combines two or more Objects', () => {
-            const a = { 'a': 1, 'b': { 'c': 2, 'd': [ 3, 4, { 'e': 5 } ] } }
-            const b = { 'a': 2, 'b': { 'd': [ 3, 4, { 'e': 6 } ], 'f': 7 } }
-            const c = { 'g': 8 }
+            const a = { a: 1, b: { c: 2, d: [ 3, 4, { e: 5 } ] } }
+            const b = { a: 2, b: { d: [ 3, 4, { e: 6 } ], f: 7 } }
+            const c = { g: 8 }
             const d = deepExtend(a, b, c)
-            d.should.deep.equal({ 'a': 2, 'b': { 'c': 2, 'd': [3, 4, { 'e': 6 }], 'f': 7 }, 'g': 8 })
+            d.should.deep.equal({ a: 2, b: { c: 2, d: [ 3, 4, { e: 6 } ], f: 7 }, g: 8 })
         })
     })
     describe('#entries', () => {
         it('Creates an iterative instance from an Object', () => {
-            const o = { 'a': 1, 'b': 2, 'c': 3 }
+            const o = { a: 1, b: 2, c: 3 }
             let t = ''
             let n = 0
-            for (const [k,v] of entries(o)) {
+            for (const [k, v] of entries(o)) {
                 t += k
                 n += v
             }
@@ -48,5 +58,15 @@ describe('Utils', () => {
             isText().should.be.false
             isText('foo').should.be.true
         })
+    })
+    describe('#stringSplice', () => {
+        it('Splices a string', () =>
+            stringSplice('foo bar baz', 'bat', 4, 7).should.equal('foo bat baz')
+        )
+    })
+    describe('#passThrough', () => {
+        it('Returns a single argument', () =>
+            passThrough('foo').should.equal('foo')
+        )
     })
 })
